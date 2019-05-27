@@ -87,6 +87,11 @@ public class ProductController {
     	return produitsAdmin;
     	
     }
+    
+    @RequestMapping(value = "/ProduitsTri", method = RequestMethod.GET)
+    public List<Product> trierProduitsParOrdreAlphabetique(){
+    	return productDao.findAllByOrderByNomAsc();
+    }
 
 
 
