@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.ecommerce.microcommerce.dao.ProductDao;
 import com.ecommerce.microcommerce.model.Product;
+import com.ecommerce.microcommerce.web.exceptions.ProduitGratuitException;
 import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
 import com.ecommerce.microcommerce.wsObject.ProductAdmin;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
@@ -113,9 +115,12 @@ public class ProductController {
 
     //ajouter un produit
     @PostMapping(value = "/Produits")
-
+    @ExceptionHandler(ProduitGratuitException.class)
     public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product) {
-
+    	
+    	if(product.getPrix() == 0 ) 
+    		throw new ProduitGratuitException("pas de produits gratuits");
+    	
         Product productAdded =  productDao.save(product);
 
         if (productAdded == null)
